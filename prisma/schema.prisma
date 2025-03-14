@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Coupon {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  isClaimed Boolean  @default(false)
+  claimedAt DateTime?
+  claimedBy String?
+  claims    ClaimRecord[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClaimRecord {
+  id        String   @id @default(cuid())
+  ipAddress String
+  couponId  String
+  coupon    Coupon   @relation(fields: [couponId], references: [id])
+  claimedAt DateTime @default(now())
+  cookieId  String
+  createdAt DateTime @default(now())
+} 
