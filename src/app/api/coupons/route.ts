@@ -7,6 +7,14 @@ const COOLDOWN_PERIOD = 60 * 60 * 1000 // 1 hour in milliseconds
 
 export async function POST(req: NextRequest) {
   try {
+    // Ensure we're in a server context
+    if (typeof window !== 'undefined') {
+      return NextResponse.json(
+        { success: false, message: 'This endpoint can only be called from the server.' },
+        { status: 403 }
+      )
+    }
+
     const ipAddress = req.ip || 'unknown'
     const cookieStore = cookies()
     let cookieId = cookieStore.get('visitor_id')?.value
